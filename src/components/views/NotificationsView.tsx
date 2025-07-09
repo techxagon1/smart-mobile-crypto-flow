@@ -3,37 +3,31 @@ import { Bell, TrendingUp, TrendingDown, Settings as SettingsIcon } from "lucide
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useNotifications } from "@/hooks/useNotifications";
 
 export function NotificationsView() {
-  const notifications = [
-    {
-      id: 1,
-      type: "price_alert",
-      title: "Bitcoin price dropped to $29,500",
-      message: "BTC/USD",
-      time: "2m ago",
-      icon: TrendingDown,
-      color: "text-red-500"
-    },
-    {
-      id: 2,
-      type: "automation",
-      title: "Ethereum price increased to $1,800",
-      message: "ETH/USD",
-      time: "5m ago",
-      icon: TrendingUp,
-      color: "text-green-500"
-    },
-    {
-      id: 3,
-      type: "strategy",
-      title: "Solana price increased to $20",
-      message: "SOL/USD",
-      time: "1h ago",
-      icon: TrendingUp,
-      color: "text-green-500"
+  const { data: notifications, isLoading, error } = useNotifications();
+
+  const getNotificationIcon = (type: string) => {
+    switch (type) {
+      case 'price_alert': return TrendingDown;
+      case 'automation': return TrendingUp;
+      case 'strategy': return TrendingUp;
+      default: return Bell;
     }
-  ];
+  };
+
+  const getNotificationColor = (type: string) => {
+    switch (type) {
+      case 'price_alert': return 'text-red-500';
+      case 'automation': return 'text-green-500';
+      case 'strategy': return 'text-blue-500';
+      default: return 'text-muted-foreground';
+    }
+  };
+
+  const unreadCount = notifications?.filter(n => !n.read).length || 0;
 
   return (
     <div className="flex flex-col h-full">
@@ -48,43 +42,78 @@ export function NotificationsView() {
       <div className="flex-1 overflow-y-auto p-4 space-y-4 pb-20">
         <div className="flex justify-between items-center">
           <h2 className="text-lg font-semibold">Today</h2>
-          <Badge variant="secondary">3</Badge>
+          {isLoading ? (
+            <Skeleton className="h-5 w-6" />
+          ) : (
+            <Badge variant="secondary">{unreadCount}</Badge>
+          )}
         </div>
 
-        {notifications.map((notification) => (
-          <Card key={notification.id}>
-            <CardContent className="p-4">
-              <div className="flex items-start gap-3">
-                <div className={`w-8 h-8 rounded-full bg-muted flex items-center justify-center ${notification.color}`}>
-                  <notification.icon className="w-4 h-4" />
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium">{notification.title}</p>
-                  <p className="text-sm text-muted-foreground">{notification.message}</p>
-                  <p className="text-xs text-muted-foreground mt-1">{notification.time}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-
-        <div className="pt-4">
-          <h3 className="text-lg font-semibold mb-4">Yesterday</h3>
+        {isLoading ? (
+          <div className="space-y-4">
+            {[1, 2, 3].map((index) => (
+              <Card key={index}>
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-3">
+                    <Skeleton className="w-8 h-8 rounded-full" />
+                    <div className="flex-1">
+                      <Skeleton className="h-4 w-3/4 mb-2" />
+                      <Skeleton className="h-3 w-1/2 mb-1" />
+                      <Skeleton className="h-3 w-1/4" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : error ? (
           <Card>
-            <CardContent className="p-4">
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-                  <Bell className="w-4 h-4" />
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium">Launch price increased to $50</p>
-                  <p className="text-sm text-muted-foreground">L2/USD</p>
-                  <p className="text-xs text-muted-foreground mt-1">1d ago</p>
-                </div>
-              </div>
+            <CardContent className="p-4 text-center text-muted-foreground">
+              Failed to load notifications. Please try again.
             </CardContent>
           </Card>
-        </div>
+        ) : (
+          <>
+            {notifications?.slice(0, 3).map((notification) => {
+              const IconComponent = getNotificationIcon(notification.type);
+              return (
+                <Card key={notification.id} className={!notification.read ? 'border-primary/20' : ''}>
+                  <CardContent className="p-4">
+                    <div className="flex items-start gap-3">
+                      <div className={`w-8 h-8 rounded-full bg-muted flex items-center justify-center ${getNotificationColor(notification.type)}`}>
+                        <IconComponent className="w-4 h-4" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium">{notification.title}</p>
+                        <p className="text-sm text-muted-foreground">{notification.message}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{notification.timestamp}</p>
+                      </div>
+                      {!notification.read && <div className="w-2 h-2 bg-primary rounded-full mt-2"></div>}
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+
+            <div className="pt-4">
+              <h3 className="text-lg font-semibold mb-4">Yesterday</h3>
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+                      <Bell className="w-4 h-4" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium">Portfolio milestone reached</p>
+                      <p className="text-sm text-muted-foreground">Your portfolio reached $10,000</p>
+                      <p className="text-xs text-muted-foreground mt-1">1d ago</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
