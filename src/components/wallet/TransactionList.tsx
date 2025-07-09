@@ -1,5 +1,5 @@
 
-import { ArrowUpRight, ArrowDownLeft, Repeat, Bitcoin, Ethereum } from "lucide-react";
+import { ArrowUpRight, ArrowDownLeft, Repeat, Bitcoin, Coins } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
@@ -61,7 +61,7 @@ export function TransactionList() {
 
   const getCurrencyIcon = (currency: string) => {
     if (currency === 'BTC') return <Bitcoin className="w-6 h-6 text-orange-500" />;
-    if (currency === 'ETH') return <Ethereum className="w-6 h-6 text-blue-500" />;
+    if (currency === 'ETH') return <Coins className="w-6 h-6 text-blue-500" />;
     return <div className="w-6 h-6 bg-gray-400 rounded-full flex items-center justify-center text-xs font-bold text-white">{currency[0]}</div>;
   };
 
