@@ -71,3 +71,7 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+
+
+how to integrate a wallet app frontend focusing on real-time intelligent automation and enhanced user experience.
+list of useful endpoints useful for my utility function for this app
