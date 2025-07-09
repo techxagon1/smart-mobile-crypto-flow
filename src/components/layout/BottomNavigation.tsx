@@ -1,5 +1,4 @@
 
-import { useLocation, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
   Wallet, 
@@ -9,29 +8,30 @@ import {
   Bell, 
   Settings 
 } from "lucide-react";
+import { useNavigationStore } from "@/store/navigationStore";
 
 const navItems = [
-  { id: "portfolio", label: "Portfolio", icon: Wallet, path: "/" },
-  { id: "transactions", label: "Transactions", icon: ArrowUpDown, path: "/transactions" },
-  { id: "bitcoin", label: "Bitcoin", icon: Bitcoin, path: "/bitcoin" },
-  { id: "automation", label: "Automation", icon: Bot, path: "/automation" },
-  { id: "notifications", label: "Notifications", icon: Bell, path: "/notifications" },
-  { id: "settings", label: "Settings", icon: Settings, path: "/settings" },
-];
+  { id: "portfolio", label: "Portfolio", icon: Wallet },
+  { id: "transactions", label: "Transactions", icon: ArrowUpDown },
+  { id: "bitcoin", label: "Bitcoin", icon: Bitcoin },
+  { id: "automation", label: "Automation", icon: Bot },
+  { id: "notifications", label: "Notifications", icon: Bell },
+  { id: "settings", label: "Settings", icon: Settings },
+] as const;
 
 export function BottomNavigation() {
-  const location = useLocation();
+  const { currentView, setCurrentView } = useNavigationStore();
 
   return (
     <nav className="sticky bottom-0 left-0 right-0 bg-card border-t border-border z-50">
       <div className="grid grid-cols-6 h-16">
         {navItems.map((item) => {
-          const isActive = location.pathname === item.path;
+          const isActive = currentView === item.id;
           
           return (
-            <Link
+            <button
               key={item.id}
-              to={item.path}
+              onClick={() => setCurrentView(item.id)}
               className="flex flex-col items-center justify-center relative"
             >
               {isActive && (
@@ -54,7 +54,7 @@ export function BottomNavigation() {
                   {item.label}
                 </span>
               </motion.div>
-            </Link>
+            </button>
           );
         })}
       </div>
