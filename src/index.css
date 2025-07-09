@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -39,19 +40,12 @@ All colors MUST be HSL.
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -101,5 +95,53 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    font-family: system-ui, -apple-system, sans-serif;
   }
+  
+  /* Mobile-first responsive design */
+  @media (max-width: 768px) {
+    .mobile-only {
+      display: block;
+    }
+    
+    .desktop-only {
+      display: none;
+    }
+  }
+  
+  @media (min-width: 769px) {
+    .mobile-only {
+      display: none;
+    }
+    
+    .desktop-only {
+      display: block;
+    }
+  }
+}
+
+/* Custom animations for crypto wallet */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.8);
+  }
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s infinite;
+}
+
+/* Smooth transitions for mobile interactions */
+* {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+button, a {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
