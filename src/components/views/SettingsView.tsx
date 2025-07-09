@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export function SettingsView() {
   const settingsSections = [
@@ -32,7 +33,7 @@ export function SettingsView() {
     {
       title: "Preferences",
       items: [
-        { icon: Eye, label: "Display Settings", description: "Theme and view preferences", hasToggle: false },
+        { icon: Eye, label: "Display Settings", description: "Theme and view preferences", hasToggle: false, isTheme: true },
         { icon: Bell, label: "Notification Preferences", description: "Manage your notifications", hasToggle: false }
       ]
     },
@@ -82,12 +83,17 @@ export function SettingsView() {
                       <div className="flex-1">
                         <p className="font-medium">{item.label}</p>
                         <p className="text-sm text-muted-foreground">{item.description}</p>
+                        {item.isTheme && (
+                          <div className="mt-2">
+                            <ThemeToggle />
+                          </div>
+                        )}
                       </div>
                       {item.hasToggle ? (
                         <Switch />
-                      ) : (
+                      ) : !item.isTheme ? (
                         <ChevronRight className="w-5 h-5 text-muted-foreground" />
-                      )}
+                      ) : null}
                     </div>
                   </div>
                 ))}
